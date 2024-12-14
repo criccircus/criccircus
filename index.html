@@ -252,7 +252,16 @@
     const telegramBtn = document.getElementById("telegramBtn");
     telegramBtn.addEventListener("click", () => {
       window.open("https://t.me/TheCricketWallah", "_blank");
-    });
+    });<script src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
+<script>
+    DisableDevtool({
+        ondevtoolopen: (type) => {
+            const info = 'devtool opened!; type =' + type;
+            alert(info); // If you are worried about blocking the page, use console.warn(info); and open the console to view
+        },
+    })
+</script>
+    
   </script>
 
 </body>
