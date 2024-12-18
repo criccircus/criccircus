@@ -2,244 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Cricket Stream</title>
-  <style>
-    /* Basic reset and styling */
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      margin: 0;
-      padding: 20px;
-      background-color: #000;
-      color: #ffffff;
-    }
-
-    /* Marquee for joining Telegram */
-    .marquee {
-      width: 100%;
-      background-color: #0088cc;
-      color: #fff;
-      font-size: 1.1em;
-      padding: 10px;
-      text-align: center;
-      overflow: hidden;
-      white-space: nowrap;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    }
-
-    .marquee span {
-      display: inline-block;
-      animation: scroll 10s linear infinite;
-    }
-
-    @keyframes scroll {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-
-    /* Iframe container for responsive aspect ratio */
-    .iframe-container {
-      position: relative;
-      width: 100%;
-      max-width: 800px;
-      padding-top: 56.25%; /* 16:9 Aspect Ratio */
-      background: #1c1c1c;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
-    }
-
-    /* Responsive iframe */
-    .iframe-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 8px;
-    }
-
-    /* Loading spinner */
-    .loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #ffffff;
-      font-size: 1.2em;
-      display: none;
-    }
-
-    /* Button styles */
-    .button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 1em;
-      transition: background-color 0.3s;
-    }
-
-    .button:hover {
-      background-color: #0056b3;
-    }
-
-    /* Specific styles for Ad Blocker button */
-    #adToggleBtn {
-      background-color: green;
-    }
-
-    #adToggleBtn.disabled {
-      background-color: red;
-    }
-
-    /* Popup styling */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    .popup-content {
-      background: #1c1c1c;
-      color: #ffffff;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-      max-width: 300px;
-      width: 80%;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    }
-
-    .popup-content a {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #d9534f;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 4px;
-    }
-
-    .close-btn {
-      margin-top: 10px;
-      padding: 8px 16px;
-      background-color: #0088cc;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-  </style>
+  <title>CRIC CIRCUS</title>
+  <script src="https://content.jwplatform.com/libraries/KB5zFt7A.js"></script>
 </head>
 <body>
+  <div id="video"></div>
 
-  <!-- Marquee Banner -->
-  <div class="marquee">
-    <span>📢 Please join our Telegram channel for live cricket updates and exclusive content! 👉 <a href="https://t.me/TheCricketWallah" target="_blank" style="color: #ffcc00; text-decoration: underline;">JOIN NOW</a></span>
-  </div>
+  <script type="text/javascript">
+    // Function to get video URL from the domain
+    function getVideoUrlFromDomain() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('url');
+    }
 
-  <h2>CRICKET CIRCUS LIVESTREAM</h2>
-
-  <div class="iframe-container">
-    <iframe frameborder="0" marginheight="0" marginwidth="0" height="520" src="https://cdn.crichdplays.ru/embed2.php?id=skyarena" name="iframe_a" scrolling="no" width="640">Your Browser Do not Support Iframe</iframe>
-    <!-- Loading Spinner -->
-    <div id="loading" class="loading">Loading Stream...</div>
-  </div>
-
-  <!-- Fullscreen Button -->
-  <button id="fullscreenBtn" class="button">Fullscreen</button>
-
-  <!-- Ad Blocker Toggle Button -->
-  <button id="adToggleBtn" class="button">Disable Ads</button>
-
-  <!-- Join Us on Telegram Button -->
-  <button id="telegramBtn" class="button" style="background-color: #0088cc;">Join Us on Telegram</button>
-
-  <!-- Popup for Telegram Channel -->
-  <div id="telegramPopup" class="popup">
-    <div class="popup-content">
-      <p><b>Join our Telegram channel for live updates and more!</b></p>
-      <a href="https://t.me/TheCricketWallah" target="_blank">JOIN US ON TELEGRAM</a>
-      <button id="closePopupBtn" class="close-btn">ALREADY JOINED</button>
-    </div>
-  </div>
-
-  <script>
-    // Show loading spinner until iframe is fully loaded
-    const iframe = document.getElementById("myIframe");
-    const loadingSpinner = document.getElementById("loading");
-
-    iframe.onload = () => {
-      loadingSpinner.style.display = "none"; // Hide spinner when iframe loads
-    };
-
-    // Fullscreen function
-    const fullscreenBtn = document.getElementById("fullscreenBtn");
-    fullscreenBtn.addEventListener("click", () => {
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen();
-      } else if (iframe.mozRequestFullScreen) { /* Firefox */
-        iframe.mozRequestFullScreen();
-      } else if (iframe.webkitRequestFullscreen) { /* Chrome, Safari, and Opera */
-        iframe.webkitRequestFullscreen();
-      } else if (iframe.msRequestFullscreen) { /* IE/Edge */
-        iframe.msRequestFullscreen();
-      }
+    jwplayer("video").setup({
+      width: "100%",
+      height: "100%",
+      autostart: true,
+      mute: false,
+      file: getVideoUrlFromDomain()
     });
 
-    // Ad blocker toggle button
-    const adToggleBtn = document.getElementById("adToggleBtn");
-
-    adToggleBtn.addEventListener("click", () => {
-      if (adToggleBtn.classList.contains("disabled")) {
-        iframe.classList.remove("ab");
-        adToggleBtn.classList.remove("disabled");
-        adToggleBtn.textContent = "Disable Ads";
-        adToggleBtn.style.backgroundColor = "green";
-      } else {
-        iframe.classList.add("ab"); // Add a class to signal ads disabled
-        adToggleBtn.classList.add("disabled");
-        adToggleBtn.textContent = "Enable Ads";
-        adToggleBtn.style.backgroundColor = "red";
-      }
-    });
-
-    // Show spinner while loading
-    loadingSpinner.style.display = "block";
-
-    // Show popup on page load
-    window.onload = function() {
-      document.getElementById("telegramPopup").style.display = "flex";
-    };
-
-    // Close popup function
-    const closePopupBtn = document.getElementById("closePopupBtn");
-    closePopupBtn.addEventListener("click", () => {
-      document.getElementById("telegramPopup").style.display = "none";
-    });
-
-    // Open Telegram link when the button is clicked
-    const telegramBtn = document.getElementById("telegramBtn");
-    telegramBtn.addEventListener("click", () => {
-      window.open("https://t.me/TheCricketWallah", "_blank");
-    });
+    if(confirm("Join Our Telegram Channel CRIC CIRCUS")) { window.location.href = "https://t.me/+k3AAY91WjYowZDJl" }
   </script>
 
+  <div style="background-color: #0074d9; text-align: center; padding: 10px;">
+    <a href="https://t.me/+k3AAY91WjYowZDJl" target="_blank">
+      <button id="joinTelegramButton" style="background-color: #fff; color: #0074d9; border: 2px solid #0074d9; padding: 5px 10px;">Join
+        Telegram</button>
+    </a>
+  </div>
 </body>
 </html>
